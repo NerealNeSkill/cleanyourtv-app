@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Clean Your TV, :feature:backup. Русский перевод. Аргументы ICU MessageFormat не менять. -->
+<resources>
+    <string name="action_back">Назад</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_ok">OK</string>
+    <string name="action_done">Готово</string>
+    <string name="gate_title">Подтвердите, что это вы</string>
+    <string name="gate_subtitle">Перед изменениями на {tv}</string>
+    <string name="gate_negative">Отмена</string>
+    <string name="gate_failed">Не удалось подтвердить, что это вы, поэтому ничего не изменено.</string>
+    <string name="restore_title">Точка восстановления</string>
+    <string name="restore_current">Сохранена {date}</string>
+    <string name="restore_none">Точки восстановления пока нет. Она сохраняется перед первым изменением.</string>
+    <string name="restore_read_failed">Не удалось прочитать точку восстановления</string>
+    <string name="restore_row_undo">Отменить всё</string>
+    <string name="restore_row_undo_sub">Вернуть ТВ в состояние на {date}</string>
+    <string name="restore_row_save">Сохранить копию</string>
+    <string name="restore_row_save_sub">Сохраняет zip-файл в выбранное вами место.</string>
+    <string name="restore_row_factory">Перед сбросом к заводским настройкам</string>
+    <string name="restore_row_factory_sub">Снова включает мастер настройки, чтобы ТВ мог нормально запуститься после сброса.</string>
+    <string name="restore_preview_title">Это вернёт ТВ в состояние на {date}:</string>
+    <string name="restore_preview_things">{count, plural, one {Включить обратно # вещь} few {Включить обратно # вещи} many {Включить обратно # вещей} other {Включить обратно # вещи}}</string>
+    <string name="restore_preview_home">Родной главный экран ТВ ({name}) снова главный</string>
+    <string name="restore_preview_wizard">Мастер настройки включён обратно</string>
+    <string name="restore_preview_helper">Помощник кнопки «Домой» выключен</string>
+    <string name="restore_preview_screensaver">Заставка с часами возвращается к родной заставке ТВ</string>
+    <string name="restore_preview_keyboard">Клавиатура возвращается к родной клавиатуре ТВ</string>
+    <string name="restore_launcher_title">Новый главный экран</string>
+    <string name="restore_launcher_keep">Оставить установленным как обычное приложение</string>
+    <string name="restore_launcher_remove">Удалить с ТВ</string>
+    <string name="restore_launcher_remove_note">Удаление также убирает ответы, которые карточки модулей дали на ТВ.</string>
+    <string name="restore_preview_button">Вернуть всё</string>
+    <string name="restore_confirm_title">Вернуть всё?</string>
+    <string name="restore_confirm_body">Реклама и слежение тоже вернутся. Очистку всегда можно запустить снова.</string>
+    <string name="restore_confirm_button">Вернуть всё</string>
+    <string name="restore_working_title">Возвращаем всё</string>
+    <string name="restore_working_things">{total, plural, other {Включаем обратно: {done} из #…}}</string>
+    <string name="restore_working_home">Возвращаем родной главный экран ТВ…</string>
+    <string name="restore_working_wizard">Включаем мастер настройки обратно…</string>
+    <string name="restore_done_title">Всё вернулось</string>
+    <string name="restore_done_body">Ваш ТВ такой же, как был {date}. Точка восстановления сохранена на случай, если передумаете.</string>
+    <string name="restore_clean_again">Запустить настройку ещё раз</string>
+    <string name="restore_factory_title">Перед сбросом к заводским настройкам</string>
+    <string name="restore_factory_body">Сброс к заводским настройкам возвращает мастер настройки ТВ, поэтому мы включаем его обратно сейчас, и ТВ сможет нормально запуститься после сброса.</string>
+    <string name="restore_factory_button">Включить мастер обратно</string>
+    <string name="restore_factory_working">Включаем мастер настройки обратно…</string>
+    <string name="restore_factory_done">Мастер настройки снова включён. Теперь ТВ можно сбрасывать.</string>
+    <string name="restore_export_saved">Копия точки восстановления сохранена.</string>
+    <string name="restore_export_failed">Не удалось сохранить копию. Попробуйте другое место.</string>
+</resources>
