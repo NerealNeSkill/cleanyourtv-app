@@ -964,7 +964,10 @@ class SetupMachine(
         // RFC-HELPER-1 (test build): the Home button helper instead of the switch, when the person
         // switched it on in Customise and this TV meets its rules (HomeHelper.refusal, as the planner).
         val helperStock = helperStock(snap, block)
-        val helper = helperStock != null && draft.homeHelper
+        // AURA Edition: on a TV whose setup wizard claims Home (Google TV), the switch ends with the wizard
+        // taking Home (HOME_SETUPWRAITH, VERIFY_FAILED), so the Home button helper is the way, without asking.
+        val wizardClaimsHome = snap.home.claimants.any { "setupwraith" in it.component.pkg.value.lowercase() }
+        val helper = helperStock != null && (draft.homeHelper || wizardClaimsHome)
         val possible = block == HomeBlock.NONE && !helper
         val choices = Choices(
             kept = draft.kept, extraOff = draft.extraOff, dock = dock,
