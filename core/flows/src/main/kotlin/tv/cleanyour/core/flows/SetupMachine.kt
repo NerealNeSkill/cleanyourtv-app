@@ -887,7 +887,7 @@ class SetupMachine(
             is ProfileResolution.BrandSureSet -> r.stockLaunchers
             is ProfileResolution.None -> r.stockLaunchers
             null -> emptyList()
-        }
+        }.let { tv.cleanyour.core.planner.LegacyHome.withLegacy(snap, it) }
         // Issue #2028: so is a TV whose Home answers to a home screen we do not know, ranked above ours.
         val stockUnknown = !ours && (StockHome.of(snap, stocks) == null || StockHome.unknownAboveOurs(snap, stocks))
         return when {

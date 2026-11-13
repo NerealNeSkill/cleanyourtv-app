@@ -254,7 +254,7 @@ class DefaultPlanner(
                 is ProfileResolution.Exact -> r.profile.stockLaunchers
                 is ProfileResolution.BrandSureSet -> r.stockLaunchers
                 is ProfileResolution.None -> r.stockLaunchers
-            }
+            }.let { LegacyHome.withLegacy(snapshot, it) }
             val choices = req.choices
             val covered = mutableSetOf<PackageName>()
             var disabled = 0
