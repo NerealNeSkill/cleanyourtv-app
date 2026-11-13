@@ -49,7 +49,7 @@ jobs:
           else
             pass=$(openssl rand -hex 16)
             keytool -genkeypair -keystore "$RUNNER_TEMP/aura.p12" -storetype PKCS12 -storepass "$pass" -alias aura \
-              -keyalg RSA -keysize 3072 -validity 36500 -dn "CN=AURA TV launcher, O=aura"
+              -keyalg RSA -keysize 3072 -validity 36500 -dname "CN=AURA TV launcher, O=aura"
             echo "AURA_KS_PASS=$pass" >> "$GITHUB_ENV"
             echo "::warning::No AURA_KEYSTORE secrets: signed with a one-off key, so this build cannot update a launcher already on the TV."
           fi
