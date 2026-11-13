@@ -144,7 +144,7 @@ jobs:
       - name: Pins and the phone app
         run: |
           ./gradlew --no-daemon --console=plain :core:trust:verifyLauncherPin :core:trust:verifyCurtainPin
-          ./gradlew --no-daemon --console=plain -Pcyt.wizardStaysAnyBrand=true :app:assembleFullDebug
+          ./gradlew --no-daemon --console=plain -Pcyt.wizardStaysAnyBrand=true -Pcyt.homeHelper=true :app:assembleFullDebug
           mkdir -p out
           cp "$(ls app/build/outputs/apk/full/debug/*.apk | head -1)" out/clean-your-tv-aura-edition.apk
           ls -l out
