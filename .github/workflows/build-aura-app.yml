@@ -15,6 +15,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: build-aura-app
+  cancel-in-progress: true
+
 env:
   LAUNCHER_REPO: NerealNeSkill/cleanyourtv
   LAUNCHER_REF: claude/project-thread-sh0pel
@@ -142,20 +146,20 @@ jobs:
           ./gradlew --no-daemon --console=plain :core:trust:verifyLauncherPin :core:trust:verifyCurtainPin
           ./gradlew --no-daemon --console=plain :app:assembleFullDebug
           mkdir -p out
-          cp "$(ls app/build/outputs/apk/full/debug/*.apk | head -1)" out/aura-tv-phone-app.apk
+          cp "$(ls app/build/outputs/apk/full/debug/*.apk | head -1)" out/clean-your-tv-aura-edition.apk
           ls -l out
-          echo "phone app: $(( $(stat -c %s out/aura-tv-phone-app.apk) / 1024 )) KB" >> "$GITHUB_STEP_SUMMARY"
+          echo "phone app: $(( $(stat -c %s out/clean-your-tv-aura-edition.apk) / 1024 )) KB" >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: aura-tv-phone-app
-          path: out/aura-tv-phone-app.apk
+          path: out/clean-your-tv-aura-edition.apk
 
       - name: Publish pre-release aura-app-latest
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete aura-app-latest --cleanup-tag --yes || true
-          gh release create aura-app-latest out/aura-tv-phone-app.apk --prerelease --target "$GITHUB_SHA" \
+          gh release create aura-app-latest out/clean-your-tv-aura-edition.apk --prerelease --target "$GITHUB_SHA" \
             --title "AURA phone app (latest build)" \
             --notes "Phone app with the AURA launcher (${L_COMMIT}) bundled. Debug-signed; install on the phone, then connect it to the TV."
