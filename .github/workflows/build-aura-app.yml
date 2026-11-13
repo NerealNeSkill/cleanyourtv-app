@@ -57,6 +57,20 @@ jobs:
           fi
           echo "AURA_KS=$RUNNER_TEMP/aura.p12" >> "$GITHUB_ENV"
 
+      - name: Make this a separate app (its own package names, so it installs beside Clean Your TV)
+        run: |
+          set -euo pipefail
+          # The phone app: another application id and name, and the launcher's and curtain's package names it talks to.
+          sed -i 's/applicationId = "tv.cleanyour.app"/applicationId = "tv.cleanyour.app.aura"/' build-logic/convention/src/main/kotlin/AndroidConventionPlugins.kt
+          sed -i 's#<string name="app_name" translatable="false">Clean Your TV</string>#<string name="app_name" translatable="false">AURA TV</string>#' app/src/main/res/values/strings.xml
+          FILES="core/backup/src/main/kotlin/tv/cleanyour/core/backup/PlainRestoreNote.kt core/engine/src/main/kotlin/tv/cleanyour/core/engine/FileOverlayTransport.kt core/flows/src/main/kotlin/tv/cleanyour/core/flows/Ports.kt core/model/src/main/kotlin/tv/cleanyour/core/model/Ops.kt core/ops/src/main/kotlin/tv/cleanyour/core/ops/HelperLines.kt core/ops/src/main/kotlin/tv/cleanyour/core/ops/ThemeProviderLines.kt core/planner/src/main/kotlin/tv/cleanyour/core/planner/SwitchOffRule.kt core/probe/src/main/kotlin/tv/cleanyour/core/probe/AdbProber.kt core/trust/src/main/kotlin/tv/cleanyour/core/trust/Pins.kt"
+          sed -i -E 's/"com\.gathin\.tvhome"/"com.gathin.tvhome.aura"/g; s#/com\.gathin\.tvhome/files#/com.gathin.tvhome.aura/files#g; s/"com\.gathin\.tvhome\.theme"/"com.gathin.tvhome.aura.theme"/g' $FILES
+          sed -i 's/"tv\.cleanyour\.curtain"/"tv.cleanyour.curtain.aura"/g' core/ops/src/main/kotlin/tv/cleanyour/core/ops/ShellRenderer.kt core/planner/src/main/kotlin/tv/cleanyour/core/planner/DefaultPlanner.kt core/probe/src/main/kotlin/tv/cleanyour/core/probe/AdbProber.kt core/trust/src/main/kotlin/tv/cleanyour/core/trust/Pins.kt
+          # The curtain: its package follows its application id (the phone starts it as <package>/.CurtainActivity).
+          sed -i 's/"tv\.cleanyour\.curtain"/"tv.cleanyour.curtain.aura"/g' tv/curtain/build.gradle.kts
+          sed -i 's/^package tv\.cleanyour\.curtain;/package tv.cleanyour.curtain.aura;/' tv/curtain/src/main/java/tv/cleanyour/curtain/*.java
+          grep -rn "curtain.aura\|tvhome.aura" core tv/curtain/build.gradle.kts | cut -c1-160
+
       - name: Build and sign the AURA launcher and the curtain
         run: |
           set -euo pipefail
@@ -64,9 +78,19 @@ jobs:
           echo "build-tools: $BT"
           cp -R aura-src/launcher "$RUNNER_TEMP/launcher"
           rm -rf "$RUNNER_TEMP/launcher/.gradle" "$RUNNER_TEMP/launcher/app/build"
+          # The launcher as its own app: package com.gathin.tvhome.aura (its Java package follows, as the phone starts
+          # <package>/.MainActivity), named AURA, with AURA on by default. The module-card and action strings stay.
+          L="$RUNNER_TEMP/launcher/app"
+          find "$L/src/main" -type f \( -name '*.java' -o -name '*.xml' \) -print0 | xargs -0 sed -i -E \
+            -e 's/^(package|import|import static) com\.gathin\.tvhome\b/\1 com.gathin.tvhome.aura/' \
+            -e 's/<com\.gathin\.tvhome\.([A-Z])/<com.gathin.tvhome.aura.\1/'
+          sed -i "s/namespace 'com.gathin.tvhome'/namespace 'com.gathin.tvhome.aura'/" "$L/build.gradle"
+          sed -i 's#<bool name="aura_ui">false</bool>#<bool name="aura_ui">true</bool>#' "$L/src/main/res/values/bools.xml"
+          sed -i 's#<string name="app_name">Home</string>#<string name="app_name">AURA</string>#' "$L/src/main/res/values/strings.xml"
+          grep -n "aura_ui\|app_name\"" "$L/src/main/res/values/bools.xml" "$L/src/main/res/values/strings.xml" | head -3
           sed -i -e '/^[[:space:]]*signingConfig[[:space:]]\{1,\}signingConfigs\.debug[[:space:]]*$/d' "$RUNNER_TEMP/launcher/app/build.gradle"
           echo "sdk.dir=$ANDROID_HOME" > "$RUNNER_TEMP/launcher/local.properties"
-          (cd "$RUNNER_TEMP/launcher" && chmod +x gradlew && ./gradlew --no-daemon --console=plain assembleRelease -PlauncherApplicationId=com.gathin.tvhome)
+          (cd "$RUNNER_TEMP/launcher" && chmod +x gradlew && ./gradlew --no-daemon --console=plain assembleRelease -PlauncherApplicationId=com.gathin.tvhome.aura)
           ./gradlew --no-daemon --console=plain :tv:curtain:assembleRelease
           ASSETS=android/platform/src/main/assets/bundled
           sign() { "$BT/apksigner" sign --ks "$AURA_KS" --ks-pass "pass:$AURA_KS_PASS" --v2-signing-enabled true --v3-signing-enabled true --out "$2" "$1"; }
