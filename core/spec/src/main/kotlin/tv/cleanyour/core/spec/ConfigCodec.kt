@@ -82,6 +82,12 @@ internal object ConfigCodecImpl {
     // open_on_start_choice, show_library_pill, library_ok_opens, uniform_tiles, the key helper
     // switches, dock_band, then the top bar, header, clock screensaver and single row keys and
     // glass_style. top_bar_apps also leaves the grid: Config adds those apps to the hidden list.
+    // The AURA home screen's keys (launcher docs/aura.md), carried as is: the launcher that has AURA reads them.
+    const val AURA_ENABLED = "aura_ui"
+    val CARRIED_AURA: Set<String> = setOf(
+        AURA_ENABLED, "aura_theme", "aura_focus", "aura_cols", "aura_hints", "aura_greeting", "aura_quick", "aura_voice", "aura_anim",
+        "aura_sort", "aura_radius", "aura_clock", "aura_all_apps", "aura_wallpaper", "aura_long_ok", "aura_fav", "aura_hidden",
+    )
     val CARRIED_30: Set<String> = setOf(
         "input_sources", "lunar_date", "lunar_utc_offset", "open_on_start_choice",
         "show_library_pill", "library_ok_opens", "uniform_tiles",
@@ -347,7 +353,7 @@ internal object ConfigCodecImpl {
         for ((k, v) in o) {
             if (k in MODELLED) continue
             unknown[k] = v.toJsonElement()
-            if (k !in CARRIED_27 && k !in CARRIED_30 && k !in CARRIED_READ) w += "unknown key $k; the launcher ignores it (carried as is)"
+            if (k !in CARRIED_27 && k !in CARRIED_30 && k !in CARRIED_AURA && k !in CARRIED_READ) w += "unknown key $k; the launcher ignores it (carried as is)"
         }
         prerequisites30(o, dockRow ?: BUILT_IN.dockRow, appLibrary ?: BUILT_IN.appLibrary, w)
         val doc = LauncherConfigDoc(

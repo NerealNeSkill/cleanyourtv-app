@@ -15,6 +15,7 @@ internal object LookCarry {
         val snap = attempt { d.snapshots.latest(tvId) }.getOrNull()
         val profile = d.tv(tvId)?.let { attempt { d.profileOf(it) }.getOrNull() }
         val liveTv = snap?.let { LiveTvKeys.pick(profile, it.packages) }
-        return { doc -> LiveTvKeys.apply(helper(doc), liveTv) }
+        val aura = attempt { d.homePrefs.loadAura(tvId) }.getOrNull()
+        return { doc -> LiveTvKeys.apply(helper(doc), liveTv).let { aura?.applyTo(it) ?: it } }
     }
 }
