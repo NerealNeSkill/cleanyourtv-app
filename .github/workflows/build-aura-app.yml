@@ -72,8 +72,9 @@ jobs:
           sign() { "$BT/apksigner" sign --ks "$AURA_KS" --ks-pass "pass:$AURA_KS_PASS" --v2-signing-enabled true --v3-signing-enabled true --out "$2" "$1"; }
           sign "$RUNNER_TEMP/launcher/app/build/outputs/apk/release/app-release-unsigned.apk" "$ASSETS/cleanyourtv-launcher.apk"
           sign tv/curtain/build/outputs/apk/release/curtain-release-unsigned.apk "$ASSETS/cleanyourtv-curtain.apk"
-          signer() { "$BT/apksigner" verify --print-certs "$1" | sed -n 's/^Signer.*certificate SHA-256 digest: //p' | head -1; }
-          echo "L_SIGNER=$(signer $ASSETS/cleanyourtv-launcher.apk)" >> "$GITHUB_ENV"
+          SIGNER=$(keytool -exportcert -keystore "$AURA_KS" -storetype PKCS12 -storepass "$AURA_KS_PASS" -alias "$(keytool -list -keystore "$AURA_KS" -storetype PKCS12 -storepass "$AURA_KS_PASS" | sed -n 's/^\([^,]*\), .*PrivateKeyEntry.*/\1/p' | head -1)" | sha256sum | cut -d' ' -f1)
+          test -n "$SIGNER" || { echo "no signer digest"; exit 1; }
+          echo "L_SIGNER=$SIGNER" >> "$GITHUB_ENV"
           echo "L_VCODE=$(sed -n 's/.*versionCode \([0-9]*\).*/\1/p' aura-src/launcher/app/build.gradle | head -1)" >> "$GITHUB_ENV"
           echo "L_VNAME=$(sed -n "s/.*versionName '\([^']*\)'.*/\1/p" aura-src/launcher/app/build.gradle | head -1)" >> "$GITHUB_ENV"
           echo "L_COMMIT=$(git -C aura-src rev-parse HEAD)" >> "$GITHUB_ENV"
