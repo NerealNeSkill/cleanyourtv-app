@@ -205,7 +205,11 @@ object HomeSwitchRisk {
             // that stays on and claims no Home no longer holds the switch back for the Wi-Fi it saved.
             val r0Applies = profile == null || anyBrand
             val blocker = if (r0Applies) r0Blocker(facts, snapshot, anyBrand) else R0Blocker.NOT_THIS_PATH
-            val risk = if (profile != null && blocker == null) null
+            // The owner of this TV asked for it (the old Clean Your TV switched this TV's home screen with the wizard
+            // left on): in this test build the wizard rules no longer hold a TV that has a list back. The wizard is
+            // not switched off, the Wi-Fi is not touched, and the safety timer and the checks after the switch
+            // (VerifyHome, focus) still put the TV's own home screen back if Home does not hold.
+            val risk = if (profile != null && (blocker == null || anyBrand)) null
                 else wizardWifiRisk(profile?.takeUnless { it.isCandidate }, snapshot, wizardWifi, r0 = blocker == null)
             if (risk != null && blocker == R0Blocker.OTHER_HOME) Risk.OTHER_HOME else risk
         }
