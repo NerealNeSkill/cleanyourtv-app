@@ -2,7 +2,6 @@ package tv.cleanyour.core.flows
 
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
-import tv.cleanyour.core.spec.ConfigCodecImpl
 import tv.cleanyour.core.spec.LauncherConfigDoc
 
 // The AURA home screen of the launcher build that carries it (launcher/docs/aura.md): whether this TV
@@ -23,7 +22,7 @@ data class AuraChoice(
 ) {
     // The keys this choice writes. Defaults are written too: a later change back must reach the TV.
     fun keys(): Map<String, JsonElement> = linkedMapOf(
-        ConfigCodecImpl.AURA_ENABLED to JsonPrimitive(enabled),
+        "aura_ui" to JsonPrimitive(enabled),
         "aura_theme" to JsonPrimitive(theme.coerceIn(0, 2)),
         "aura_focus" to JsonPrimitive(focus.coerceIn(0, 4)),
         "aura_cols" to JsonPrimitive(columns.coerceIn(4, 7)),
