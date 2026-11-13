@@ -146,7 +146,11 @@ jobs:
           ./gradlew --no-daemon --console=plain :core:trust:verifyLauncherPin :core:trust:verifyCurtainPin
           ./gradlew --no-daemon --console=plain -Pcyt.wizardStaysAnyBrand=true -Pcyt.homeHelper=true :app:assembleFullDebug
           mkdir -p out
-          cp "$(ls app/build/outputs/apk/full/debug/*.apk | head -1)" out/clean-your-tv-aura-edition.apk
+          # Re-sign with the AURA key: the runner's own debug key changes on every build, and Android refuses to
+          # update an app whose signer differs, which forced uninstall-and-reinstall.
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          "$BT/apksigner" sign --ks "$AURA_KS" --ks-pass "pass:$AURA_KS_PASS" --v2-signing-enabled true --v3-signing-enabled true \
+            --out out/clean-your-tv-aura-edition.apk "$(ls app/build/outputs/apk/full/debug/*.apk | head -1)"
           ls -l out
           echo "phone app: $(( $(stat -c %s out/clean-your-tv-aura-edition.apk) / 1024 )) KB" >> "$GITHUB_STEP_SUMMARY"
 
