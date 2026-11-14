@@ -22,7 +22,9 @@ import android.view.View;
 final class CurtainView extends View {
     // ---- design constants (1920 by 1080) ---------------------------------------------------------
     private static final float W = 1920f, H = 1080f;
-    private static final int WARM = 0xFFF2B35C;
+    // AURA's mint accent and deep Orbit background, so the setup screen looks like the home screen that follows it.
+    private static final int WARM = 0xFF7CF0C0;
+    private static final int BG = 0xFF070B14;
     private static final float HOME_X = 1380f, HOME_Y = 330f;
     private static final float BAND_X0 = 108f, BAND_X1 = 1812f, BAND_BOTTOM = 980f, BAND_H = 340f, BAND_R = 36f;
     private static final float LINE_Y = 976f;
@@ -109,7 +111,7 @@ final class CurtainView extends View {
         this.brand = brand.toUpperCase(java.util.Locale.ROOT);
         this.chip = chip.toUpperCase(java.util.Locale.ROOT);
         this.allClean = allClean;
-        setBackgroundColor(0xFF000000);
+        setBackgroundColor(BG);
         light = context.getResources().getFont(R.font.curtain_outfit_light);
         regular = context.getResources().getFont(R.font.curtain_outfit_regular);
         java.util.Arrays.fill(readAt, Float.NaN);
@@ -118,11 +120,11 @@ final class CurtainView extends View {
 
         halo = new RadialGradient(0, 0, 460, new int[]{argb(.50f, WARM), argb(.22f, WARM), argb(.07f, WARM), 0, 0}, new float[]{0f, .30f, .54f, .70f, 1f}, Shader.TileMode.CLAMP);
         // Glows of unit radius, scaled when drawn: a disc's soft shadow, solid to the disc's edge.
-        lanternGlow = glow(argb(.8f, 0xFFFFDCA0), 13f / 93f);
+        lanternGlow = glow(argb(.8f, 0xFFB8FFE0), 13f / 93f);
         holeGlow = glow(argb(.5f, WARM), 52f / 122f);
         flashGlow = glow(argb(.8f, WARM), 52f / 162f);
         dotGlow = glow(argb(.6f, WARM), 9f / 33f);
-        acc = new SweepGradient(0, 0, new int[]{0, 0, argb(.95f, 0xFFFFE4B8), 0, argb(.5f, WARM), 0, 0}, new float[]{0f, .30f, .45f, .58f, .78f, .92f, 1f});
+        acc = new SweepGradient(0, 0, new int[]{0, 0, argb(.95f, 0xFFD2FFEC), 0, argb(.5f, WARM), 0, 0}, new float[]{0f, .30f, .45f, .58f, .78f, .92f, 1f});
         acc2 = new SweepGradient(0, 0, new int[]{0, 0, argb(.55f, WARM), 0, 0}, new float[]{0f, .40f, .55f, .70f, 1f});
         silver = new RadialGradient(0, 0, 1, new int[]{argb(.26f, 0xFFB9C2CC), argb(.08f, 0xFFB9C2CC), 0, 0}, new float[]{0f, .5f, .7f, 1f}, Shader.TileMode.CLAMP);
         bandGlow = new RadialGradient(0, 0, 1, new int[]{argb(.35f, WARM), 0, 0}, new float[]{0f, .7f, 1f}, Shader.TileMode.CLAMP);
@@ -418,8 +420,8 @@ final class CurtainView extends View {
             float x0 = -w / 2f - .03f * w, x1 = w / 2f + .03f * w;
             stroke.setStrokeCap(Paint.Cap.ROUND);
             stroke.setStrokeWidth(30f); stroke.setColor(argb(.14f * alpha, WARM)); c.drawLine(x0, y, x1, y, stroke);
-            stroke.setStrokeWidth(12f); stroke.setColor(argb(.35f * alpha, 0xFFFFE4B8)); c.drawLine(x0, y, x1, y, stroke);
-            stroke.setStrokeWidth(3f); stroke.setColor(argb(alpha, 0xFFFFF1D8)); c.drawLine(x0, y, x1, y, stroke);
+            stroke.setStrokeWidth(12f); stroke.setColor(argb(.35f * alpha, 0xFFD2FFEC)); c.drawLine(x0, y, x1, y, stroke);
+            stroke.setStrokeWidth(3f); stroke.setColor(argb(alpha, 0xFFEFFFF8)); c.drawLine(x0, y, x1, y, stroke);
             stroke.setStrokeCap(Paint.Cap.BUTT);
         } else if (read) {
             drawLit(c, i, w, h, .3f * alpha);
@@ -488,7 +490,7 @@ final class CurtainView extends View {
         c.drawCircle(0, 0, r, fill);
         if (hole > 0f) {
             stroke.setStrokeWidth(lerp(2f, 3f, flash));
-            stroke.setColor(argb(op * hole * lerp(.6f, .9f, flash), flash > .5f ? 0xFFFFE4B8 : WARM));
+            stroke.setColor(argb(op * hole * lerp(.6f, .9f, flash), flash > .5f ? 0xFFD2FFEC : WARM));
             c.drawCircle(0, 0, r + 1f, stroke);
         }
         // The burst as a card vanishes.
@@ -497,7 +499,7 @@ final class CurtainView extends View {
             if (p < 1f) {
                 float e = bezier(OUT, p), sc = lerp(.5f, 3.2f, e);
                 stroke.setStrokeWidth(3f * sc);
-                stroke.setColor(argb(op * lerp(.9f, 0f, e), 0xFFFFE4B8));
+                stroke.setColor(argb(op * lerp(.9f, 0f, e), 0xFFD2FFEC));
                 c.drawCircle(0, 0, 68.5f * sc, stroke);
             }
         }
@@ -519,7 +521,7 @@ final class CurtainView extends View {
         if (h > 0.5f) {
             rect.set(BAND_X0, BAND_BOTTOM - h, BAND_X1, BAND_BOTTOM);
             float r = Math.min(BAND_R, h / 2f);
-            fill.setColor(argb(op, 0xFF131315));
+            fill.setColor(argb(op, 0xFF121A24));
             c.drawRoundRect(rect, r, r, fill);
             stroke.setStrokeWidth(1.5f);
             stroke.setColor(argb(op * .08f * tween(t, bandAt, .9f, EASE), 0xFFFFFFFF));
@@ -657,7 +659,7 @@ final class CurtainView extends View {
         // Nothing covered it in time: a short fade to black, then the curtain finishes itself.
         float black = tween(t, finaleAt + 5.4f, .6f, EASE);
         if (black > 0f) {
-            fill.setColor(argb(black, 0xFF000000));
+            fill.setColor(argb(black, BG));
             c.drawRect(0, 0, W, H, fill);
         }
     }
