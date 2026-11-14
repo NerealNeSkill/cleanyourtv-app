@@ -116,9 +116,7 @@ fun HomeScreen(
             }
         }
         ListGroup(Modifier.padding(top = 20.dp)) {
-            // AURA is this build's home screen: its row comes first, and the classic look (pictures, glass, tiles per row)
-            // is shown only when AURA was switched off.
-            val auraOn = state.aura?.enabled != false
+            // AURA is this build's home screen: its row comes first.
             ListRow(stringResource(R.string.home_row_aura), subtitle = AuraRowSummary(state.aura),
                 onClick = if (busy == null) ({ auraOpen = true }) else null)
             ListDivider()
@@ -128,10 +126,7 @@ fun HomeScreen(
             val dockLine = if (below > 0) msg(R.string.home_row_dock_rows, "names" to inDock, "count" to below) else inDock
             ListRow(stringResource(R.string.home_row_dock), subtitle = dockLine.ifEmpty { null },
                 onClick = if (busy == null) ({ dockOpen = true }) else null)
-            if (!auraOn) {
-                ListDivider()
-                LookRow(state, onClick = if (busy == null) ({ onIntent(HomeScreenIntent.OpenLook) }) else null)
-            }
+            // The classic look (Clean Your TV's pictures, glass, tiles per row) is gone from this build: AURA is the only home screen.
         }
         // look2: a failed look send keeps the draft (and a new photo); Open Look reopens it.
         if (state.lookFailed && busy == null) {
