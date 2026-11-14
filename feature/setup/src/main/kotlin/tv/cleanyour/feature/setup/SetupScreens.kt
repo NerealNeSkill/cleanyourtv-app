@@ -3,6 +3,7 @@
 
 package tv.cleanyour.feature.setup
 
+import tv.cleanyour.core.planner.NarrationText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -736,7 +737,7 @@ fun WorkingScreen(state: SetupState.Working, extras: SetupExtras, actions: Setup
 // skipped (it is named on Done, UX 4.14).
 private fun List<tv.cleanyour.core.engine.NarrationLine>.toLines(): List<NarrationLine> = mapIndexed { i, l ->
     NarrationLine(
-        "$i:${l.text}", tv.cleanyour.core.planner.NarrationText.localized(l.text),
+        "$i:${l.text}", NarrationText.localized(l.text),
         when (l.state) {
             EngineNarration.DOING -> NarrationState.DOING
             EngineNarration.DONE -> NarrationState.DONE

@@ -1,5 +1,6 @@
 package tv.cleanyour.core.flows
 
+import tv.cleanyour.core.planner.NarrationText
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -367,7 +368,7 @@ class TvWriter(private val d: ManageDeps) {
             }
             d.openWrites.remember(plan.id, request)
             val outcome = d.runner.run(tv, plan, session, onStarted = { d.sessionEnd.touched(tvId) }) { s ->
-                if (s is RunState.Running) onBusy(Busy.Working(s.percent, s.narration.map { tv.cleanyour.core.planner.NarrationText.localized(it.text) }))
+                if (s is RunState.Running) onBusy(Busy.Working(s.percent, s.narration.map { NarrationText.localized(it.text) }))
             }
             when (outcome) {
                 is RunOutcome.Finished -> {
