@@ -623,6 +623,15 @@ class DefaultPlanner(
             val listed = HelperLines.listed(list)
             val needsOn = HomeHelper.needsOn(snapshot)
             homeScreenPossible = true
+            // AURA edition: AURA becomes the assistant, so the remote's microphone button opens its voice search. Cosmetic: a
+            // refusal here never stops the setup, and Undo puts the earlier assistant back.
+            val assistant = "${launcher.pkg.value}/${launcher.pkg.value}.AuraVoiceService"
+            for (key in listOf(SettingKey.ASSISTANT, SettingKey.VOICE_INTERACTION_SERVICE)) {
+                if (snapshot.settings[key] != assistant) {
+                    step(Op.SettingsPut(key, assistant), Prior(settingValue = snapshot.settings[key]), GROUP_HELPER,
+                        "Making AURA the assistant for the microphone button", FailurePolicy.CONTINUE)
+                }
+            }
             if (listed && !needsOn) return   // already on: the look above carried its keys again
             val token = idGen.runToken()
             val service = HomeHelper.SERVICE

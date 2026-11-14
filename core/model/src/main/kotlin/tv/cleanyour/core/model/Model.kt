@@ -103,7 +103,10 @@ enum class SettingKey(val ns: SettingsNs, val key: String, val valueShape: Regex
     ACCESSIBILITY_ENABLED(SettingsNs.SECURE, "accessibility_enabled", Regex("^[01]$")),
     ADB_ENABLED(SettingsNs.GLOBAL, "adb_enabled", Regex("^0$")),
     ADB_WIFI_ENABLED(SettingsNs.GLOBAL, "adb_wifi_enabled", Regex("^0$")),
-    DEVICE_NAME(SettingsNs.GLOBAL, "device_name", Regex("^[A-Za-z0-9 ._-]{1,32}$")) }
+    DEVICE_NAME(SettingsNs.GLOBAL, "device_name", Regex("^[A-Za-z0-9 ._-]{1,32}$")),
+    // AURA edition: the assistant the remote's microphone button opens (a component, package/class).
+    ASSISTANT(SettingsNs.SECURE, "assistant", Regex("^[A-Za-z0-9._]+/[A-Za-z0-9._$]+$")),
+    VOICE_INTERACTION_SERVICE(SettingsNs.SECURE, "voice_interaction_service", Regex("^[A-Za-z0-9._]+/[A-Za-z0-9._$]+$")) }
 
 enum class GroupDefault { DISABLE, ASK, KEEP }
 enum class Platform { ANDROID_TV, GOOGLE_TV, FIRE_OS, TCL_CN }

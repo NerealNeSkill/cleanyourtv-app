@@ -7,6 +7,7 @@ import java.util.Locale
 // know is shown as it is.
 object NarrationText {
     private val exact = mapOf(
+        "Making AURA the assistant for the microphone button" to "Делаю AURA ассистентом для кнопки микрофона",
         "Preparing the home screen" to "Готовлю главный экран",
         "Clearing the old wallpaper" to "Убираю старые обои",
         "Clearing the look" to "Сбрасываю оформление",
