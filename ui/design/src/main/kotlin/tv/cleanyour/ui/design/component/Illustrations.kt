@@ -76,9 +76,9 @@ private fun tvType(size: Float, weight: FontWeight = FontWeight.Normal, tracking
 // sees their own TV, not a module (device test 2026-10-20).
 @Composable
 private fun CleanHome(u: Dp, modifier: Modifier) {
-    Box(modifier.fillMaxSize().ambientGlow(Color(0xFFE8343D), coreAlpha = 0.30f, midAlpha = 0.09f)) {
-        Text("GOOD AFTERNOON", Modifier.offset(u * 18, u * 14), color = Color.White.copy(alpha = 0.55f), style = tvType(5 * u.value, tracking = 1.2f * u.value))
-        Text("2:17", Modifier.offset(u * 16, u * 20), color = Color(0xFFF5F5F7), style = tvType(22 * u.value, FontWeight.ExtraLight))
+    Box(modifier.fillMaxSize().background(Color(0xFF070B14)).ambientGlow(Color(0xFF7CF0C0), coreAlpha = 0.20f, midAlpha = 0.06f)) {
+        Text("ДОБРЫЙ ДЕНЬ", Modifier.offset(u * 18, u * 14), color = Color.White.copy(alpha = 0.55f), style = tvType(5 * u.value, tracking = 1.2f * u.value))
+        Text("14:17", Modifier.offset(u * 16, u * 20), color = Color(0xFFF5F5F7), style = tvType(22 * u.value, FontWeight.ExtraLight))
         Row(Modifier.align(Alignment.TopEnd).padding(top = u * 22, end = u * 14), horizontalArrangement = Arrangement.spacedBy(u * 5)) {
             repeat(3) { MiniPill(u) }
         }
@@ -92,26 +92,26 @@ private fun MiniPill(u: Dp) {
     Box(Modifier.size(u * 30, u * 12).background(Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.2f), Color.White.copy(alpha = 0.08f))), RoundedCornerShape(u * 6)).border(0.5.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(u * 6)))
 }
 
+// AURA's tile row: no plate, the focused tile in the mint ring.
 @Composable
 private fun Dock(u: Dp, modifier: Modifier) {
     Row(
-        modifier.padding(start = u * 12, end = u * 12, bottom = u * 12).fillMaxWidth().height(u * 52)
-            .background(Color(0xFF111113), RoundedCornerShape(u * 12)).border(0.5.dp, Color.White.copy(alpha = 0.18f), RoundedCornerShape(u * 12))
-            .padding(u * 6),
+        modifier.padding(start = u * 14, end = u * 14, bottom = u * 14).fillMaxWidth().height(u * 46),
         horizontalArrangement = Arrangement.spacedBy(u * 7),
     ) {
         val tile = Modifier.weight(1f).fillMaxSize()
         Box(
-            tile.border(1.dp, Color.White.copy(alpha = 0.85f), RoundedCornerShape(u * 8))
-                .background(Brush.radialGradient(listOf(Color(0xFFE8343D), Color(0xFF8E1218))), RoundedCornerShape(u * 8)),
+            tile.border(1.5.dp, Color(0xFF7CF0C0), RoundedCornerShape(u * 9))
+                .background(Brush.radialGradient(listOf(Color(0xFFE8343D), Color(0xFF8E1218))), RoundedCornerShape(u * 9)),
             contentAlignment = Alignment.Center,
         ) { Text("YouTube", color = Color.White, style = tvType(9 * u.value, FontWeight.Medium)) }
         Box(
-            tile.background(Brush.linearGradient(listOf(Color(0xFF0F2A4A), Color(0xFF1A98FF))), RoundedCornerShape(u * 8)),
+            tile.background(Brush.linearGradient(listOf(Color(0xFF0F2A4A), Color(0xFF1A98FF))), RoundedCornerShape(u * 9)),
             contentAlignment = Alignment.Center,
         ) { Text("prime video", color = Color.White, style = tvType(7 * u.value, FontWeight.Medium)) }
-        Box(tile.background(Brush.linearGradient(listOf(Color(0xFF3B3B40), Color(0xFF76767D))), RoundedCornerShape(u * 8)))
-        Box(tile.background(Brush.linearGradient(listOf(Color(0xFF0B5E57), Color(0xFF1FA597))), RoundedCornerShape(u * 8)))
+        Box(tile.background(Brush.linearGradient(listOf(Color(0xFF1B2230), Color(0xFF3B4658))), RoundedCornerShape(u * 9)))
+        Box(tile.background(Brush.linearGradient(listOf(Color(0xFF0B5E57), Color(0xFF1FA597))), RoundedCornerShape(u * 9)))
+        Box(tile.background(Brush.linearGradient(listOf(Color(0xFF2A1B4A), Color(0xFF6B4BC8))), RoundedCornerShape(u * 9)))
     }
 }
 
