@@ -7,6 +7,18 @@ import java.util.Locale
 // know is shown as it is.
 object NarrationText {
     private val exact = mapOf(
+        "Preparing the home screen" to "Готовлю главный экран",
+        "Clearing the old wallpaper" to "Убираю старые обои",
+        "Clearing the look" to "Сбрасываю оформление",
+        "Restarting the home screen" to "Перезапускаю главный экран",
+        "Showing the home screen" to "Показываю главный экран",
+        "Starting the new home screen" to "Запускаю новый главный экран",
+        "Checking the home screen" to "Проверяю главный экран",
+        "Preparing the TV" to "Готовлю ТВ",
+        "Preparing the restore point folder" to "Готовлю папку точки восстановления",
+        "Preparing the safety timer" to "Ставлю защитный таймер",
+        "Removing the progress screen from the TV" to "Убираю экран хода работы с ТВ",
+        "Restarting the TV" to "Перезапускаю ТВ",
         "Restore point saved" to "Точка восстановления сохранена",
         "Giving the TV a moment" to "Даю ТВ секунду",
         "Installing the new home screen" to "Устанавливаю новый главный экран",
