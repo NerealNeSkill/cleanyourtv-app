@@ -53,11 +53,10 @@ jobs:
             echo "AURA_KS_PASS=$KS_PASS" >> "$GITHUB_ENV"
             echo "Using the key from the repository secrets." >> "$GITHUB_STEP_SUMMARY"
           else
-            pass=$(openssl rand -hex 16)
-            keytool -genkeypair -keystore "$RUNNER_TEMP/aura.p12" -storetype PKCS12 -storepass "$pass" -alias aura \
-              -keyalg RSA -keysize 3072 -validity 36500 -dname "CN=AURA TV launcher, O=aura"
-            echo "AURA_KS_PASS=$pass" >> "$GITHUB_ENV"
-            echo "::warning::No AURA_KEYSTORE secrets: signed with a one-off key, so this build cannot update a launcher already on the TV."
+            # Fixed key kept in the repository (a hobby fork, not a store release): every build is signed the same,
+            # so a new build installs over the old one.
+            cp .github/aura-key/aura.p12 "$RUNNER_TEMP/aura.p12"
+            echo "AURA_KS_PASS=auratv-public" >> "$GITHUB_ENV"
           fi
           echo "AURA_KS=$RUNNER_TEMP/aura.p12" >> "$GITHUB_ENV"
 
