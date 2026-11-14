@@ -10,7 +10,7 @@ import tv.cleanyour.core.spec.LauncherConfigDoc
 // gets none of these keys, so a TV that never chose AURA is sent exactly what it was before.
 // The keys go into config.json through LauncherConfigDoc.unknown, as the launcher's AuraStyle.syncOverlay reads them.
 data class AuraChoice(
-    val enabled: Boolean = false,
+    val enabled: Boolean = true,   // this fork's build carries AURA as its home screen
     val theme: Int = 0,           // 0 Orbit, 1 Graphite, 2 Light
     val focus: Int = 0,           // 0 mint, 1 blue, 2 violet, 3 amber, 4 rose
     val columns: Int = 5,         // 4 to 7 app columns

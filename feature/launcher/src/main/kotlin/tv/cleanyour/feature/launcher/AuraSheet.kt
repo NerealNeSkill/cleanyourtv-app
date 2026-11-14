@@ -29,7 +29,7 @@ import tv.cleanyour.ui.design.component.SwitchRow
 // choice and sends the saved look again with it (HomeScreenIntent.SetAura), so the TV changes in one push.
 @Composable
 internal fun AuraRowSummary(aura: AuraChoice?): String =
-    if (aura?.enabled == true) stringResource(R.string.home_aura_on) else stringResource(R.string.home_aura_off)
+    if (aura?.enabled != false) stringResource(R.string.home_aura_on) else stringResource(R.string.home_aura_off)
 
 @Composable
 internal fun AuraSheet(current: AuraChoice?, onDone: (AuraChoice) -> Unit, onDismiss: () -> Unit) {

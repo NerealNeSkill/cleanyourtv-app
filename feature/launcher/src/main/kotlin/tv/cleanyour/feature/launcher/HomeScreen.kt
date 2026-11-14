@@ -116,17 +116,22 @@ fun HomeScreen(
             }
         }
         ListGroup(Modifier.padding(top = 20.dp)) {
+            // AURA is this build's home screen: its row comes first, and the classic look (pictures, glass, tiles per row)
+            // is shown only when AURA was switched off.
+            val auraOn = state.aura?.enabled != false
+            ListRow(stringResource(R.string.home_row_aura), subtitle = AuraRowSummary(state.aura),
+                onClick = if (busy == null) ({ auraOpen = true }) else null)
+            ListDivider()
             // The dock's apps by name, and how many more sit in the rows under it.
             val inDock = state.dock.take(state.columns).joinToString(", ") { it.name }
             val below = (state.dock.size - state.columns).coerceAtLeast(0)
             val dockLine = if (below > 0) msg(R.string.home_row_dock_rows, "names" to inDock, "count" to below) else inDock
             ListRow(stringResource(R.string.home_row_dock), subtitle = dockLine.ifEmpty { null },
                 onClick = if (busy == null) ({ dockOpen = true }) else null)
-            ListDivider()
-            LookRow(state, onClick = if (busy == null) ({ onIntent(HomeScreenIntent.OpenLook) }) else null)
-            ListDivider()
-            ListRow(stringResource(R.string.home_row_aura), subtitle = AuraRowSummary(state.aura),
-                onClick = if (busy == null) ({ auraOpen = true }) else null)
+            if (!auraOn) {
+                ListDivider()
+                LookRow(state, onClick = if (busy == null) ({ onIntent(HomeScreenIntent.OpenLook) }) else null)
+            }
         }
         // look2: a failed look send keeps the draft (and a new photo); Open Look reopens it.
         if (state.lookFailed && busy == null) {
@@ -272,7 +277,7 @@ internal fun ColumnScope.StockPreviewContent(plan: Plan, onIntent: (HomeScreenIn
     SheetHeader(stringResource(R.string.home_stock_preview_title))
     Body(stringResource(R.string.home_stock_preview_body), Modifier.padding(top = 8.dp))
     Column(Modifier.padding(top = 16.dp, start = 4.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        plan.steps.map { it.narration }.distinct().forEach { CheckLine(it, state = CheckState.NONE) }
+        plan.steps.map { it.narration }.distinct().forEach { CheckLine(tv.cleanyour.core.planner.NarrationText.localized(it), state = CheckState.NONE) }
     }
     ActionColumn(Modifier.padding(top = 20.dp)) {
         PrimaryButton(stringResource(R.string.home_stock_confirm), { onIntent(HomeScreenIntent.UseStock) })
@@ -287,7 +292,7 @@ internal fun ColumnScope.UpdatePreviewContent(plan: Plan, version: String, onInt
     SheetHeader(stringResource(R.string.home_update_preview_title))
     Body(msg(R.string.home_update_preview_body, "version" to version), Modifier.padding(top = 8.dp))
     Column(Modifier.padding(top = 16.dp, start = 4.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        plan.steps.map { it.narration }.filter { it.isNotBlank() }.distinct().forEach { CheckLine(it, state = CheckState.NONE) }
+        plan.steps.map { it.narration }.filter { it.isNotBlank() }.distinct().forEach { CheckLine(tv.cleanyour.core.planner.NarrationText.localized(it), state = CheckState.NONE) }
     }
     ActionColumn(Modifier.padding(top = 20.dp)) {
         PrimaryButton(stringResource(R.string.home_update_confirm), { onIntent(HomeScreenIntent.UpdateHomeScreen) })

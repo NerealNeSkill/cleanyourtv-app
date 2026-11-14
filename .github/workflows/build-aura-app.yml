@@ -65,7 +65,6 @@ jobs:
           set -euo pipefail
           # The phone app: another application id and name, and the launcher's and curtain's package names it talks to.
           sed -i 's/applicationId = "tv.cleanyour.app"/applicationId = "tv.cleanyour.app.aura"/' build-logic/convention/src/main/kotlin/AndroidConventionPlugins.kt
-          sed -i 's#<string name="app_name" translatable="false">Clean Your TV</string>#<string name="app_name" translatable="false">Clean Your TV AURA Edition</string>#' app/src/main/res/values/strings.xml
           FILES="core/backup/src/main/kotlin/tv/cleanyour/core/backup/PlainRestoreNote.kt core/engine/src/main/kotlin/tv/cleanyour/core/engine/FileOverlayTransport.kt core/flows/src/main/kotlin/tv/cleanyour/core/flows/Ports.kt core/model/src/main/kotlin/tv/cleanyour/core/model/Ops.kt core/ops/src/main/kotlin/tv/cleanyour/core/ops/HelperLines.kt core/ops/src/main/kotlin/tv/cleanyour/core/ops/ThemeProviderLines.kt core/planner/src/main/kotlin/tv/cleanyour/core/planner/SwitchOffRule.kt core/probe/src/main/kotlin/tv/cleanyour/core/probe/AdbProber.kt core/trust/src/main/kotlin/tv/cleanyour/core/trust/Pins.kt"
           sed -i -E 's/"com\.gathin\.tvhome"/"com.gathin.tvhome.aura"/g; s#/com\.gathin\.tvhome/files#/com.gathin.tvhome.aura/files#g; s/"com\.gathin\.tvhome\.theme"/"com.gathin.tvhome.aura.theme"/g' $FILES
           sed -i 's/"tv\.cleanyour\.curtain"/"tv.cleanyour.curtain.aura"/g' core/ops/src/main/kotlin/tv/cleanyour/core/ops/ShellRenderer.kt core/planner/src/main/kotlin/tv/cleanyour/core/planner/DefaultPlanner.kt core/probe/src/main/kotlin/tv/cleanyour/core/probe/AdbProber.kt core/trust/src/main/kotlin/tv/cleanyour/core/trust/Pins.kt
@@ -90,6 +89,11 @@ jobs:
           sed -i "s/namespace 'com.gathin.tvhome'/namespace 'com.gathin.tvhome.aura'/" "$L/build.gradle"
           sed -i 's#<bool name="aura_ui">false</bool>#<bool name="aura_ui">true</bool>#' "$L/src/main/res/values/bools.xml"
           sed -i 's#<string name="app_name">Home</string>#<string name="app_name">AURA</string>#' "$L/src/main/res/values/strings.xml"
+          # A higher versionCode with every build: the phone app updates the launcher on the TV only if the one it carries is newer.
+          sed -i 's/"com\.gathin\.tvhome\./"com.gathin.tvhome.aura./' "$L/src/main/res/xml/aura_voice_interaction.xml"
+          VC=$((1000 + GITHUB_RUN_NUMBER))
+          sed -i -E "s/versionCode [0-9]+/versionCode $VC/; s/versionName '([^']*)'/versionName '\\1-aura.$GITHUB_RUN_NUMBER'/" "$L/build.gradle"
+          grep -n "versionCode\|versionName" "$L/build.gradle"
           grep -n "aura_ui\|app_name\"" "$L/src/main/res/values/bools.xml" "$L/src/main/res/values/strings.xml" | head -3
           sed -i -e '/^[[:space:]]*signingConfig[[:space:]]\{1,\}signingConfigs\.debug[[:space:]]*$/d' "$RUNNER_TEMP/launcher/app/build.gradle"
           echo "sdk.dir=$ANDROID_HOME" > "$RUNNER_TEMP/launcher/local.properties"
@@ -102,8 +106,8 @@ jobs:
           SIGNER=$(keytool -exportcert -keystore "$AURA_KS" -storetype PKCS12 -storepass "$AURA_KS_PASS" -alias "$(keytool -list -keystore "$AURA_KS" -storetype PKCS12 -storepass "$AURA_KS_PASS" | sed -n 's/^\([^,]*\), .*PrivateKeyEntry.*/\1/p' | head -1)" | sha256sum | cut -d' ' -f1)
           test -n "$SIGNER" || { echo "no signer digest"; exit 1; }
           echo "L_SIGNER=$SIGNER" >> "$GITHUB_ENV"
-          echo "L_VCODE=$(sed -n 's/.*versionCode \([0-9]*\).*/\1/p' aura-src/launcher/app/build.gradle | head -1)" >> "$GITHUB_ENV"
-          echo "L_VNAME=$(sed -n "s/.*versionName '\([^']*\)'.*/\1/p" aura-src/launcher/app/build.gradle | head -1)" >> "$GITHUB_ENV"
+          echo "L_VCODE=$(sed -n 's/.*versionCode \([0-9]*\).*/\1/p' "$RUNNER_TEMP/launcher/app/build.gradle" | head -1)" >> "$GITHUB_ENV"
+          echo "L_VNAME=$(sed -n "s/.*versionName '\([^']*\)'.*/\1/p" "$RUNNER_TEMP/launcher/app/build.gradle" | head -1)" >> "$GITHUB_ENV"
           echo "L_COMMIT=$(git -C aura-src rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Point the pins at these APKs
