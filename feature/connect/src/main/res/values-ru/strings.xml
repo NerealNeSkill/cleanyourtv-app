@@ -4,7 +4,7 @@
     <string name="action_back">Назад</string>
     <string name="action_cancel">Отмена</string>
     <string name="action_ok">OK</string>
-    <string name="welcome_title">Ваш ТВ, наведённый в порядок.</string>
+    <string name="welcome_title">Ваш ТВ, приведённый в порядок.</string>
     <string name="welcome_body">Отключите лишнее, оставьте нужные приложения и получите спокойный главный экран. Пять минут. Всё можно вернуть.</string>
     <string name="welcome_hero_cd">Главный экран ТВ, заполненный спонсорскими рядами, становится чистым: четыре приложения внизу</string>
     <string name="welcome_looking">Ищем ТВ в вашей сети Wi-Fi…</string>
