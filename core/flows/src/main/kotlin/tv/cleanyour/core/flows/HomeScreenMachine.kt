@@ -121,6 +121,8 @@ data class HomeScreenState(
     // 0.4.8 (PLAN item 3): "This is your TV now", the TV's screenshot after a look went to it from this page; null
     // before a send, while one runs, or when the TV gave no picture.
     val lookShot: ByteArray? = null,
+    // The AURA home screen's choice for this TV (AuraChoice); null until one was made. An older launcher build ignores it.
+    val aura: AuraChoice? = null,
 ) {
     val waiting: Int get() = waitingApps.size
 }
@@ -147,6 +149,7 @@ sealed interface HomeScreenIntent {
     data object UpdateHomeScreen : HomeScreenIntent    // D4
     data object RunSetupAgain : HomeScreenIntent       // 0.3.3 D2, NotOnTv.setupAgain
     data object HelpAddTv : HomeScreenIntent           // 0.3.3 D2, NotOnTv.helpAddTv
+    data class SetAura(val choice: AuraChoice) : HomeScreenIntent   // AURA home screen: keep the choice, send it with the saved look
     data object HelperOff : HomeScreenIntent           // RFC-HELPER-1: the helper's "Switch off"
 }
 
@@ -244,7 +247,7 @@ class HomeScreenMachine(
     override fun handle(event: Any, before: HomeScreenState, after: HomeScreenState) {
         if (before.busy != null && event is HomeScreenIntent) return
         // 0.3.3 D2: nothing to send the dock or the look to.
-        if (after.notOnTv != null && (event is HomeScreenIntent.SetDock || event is HomeScreenIntent.SetTheme || event == HomeScreenIntent.RestoreMine ||
+        if (after.notOnTv != null && (event is HomeScreenIntent.SetDock || event is HomeScreenIntent.SetAura || event is HomeScreenIntent.SetTheme || event == HomeScreenIntent.RestoreMine ||
             event == HomeScreenIntent.UseLook)) return
         when (event) {
             // 0.4.0: the sheet's list, then the saved apps it never showed (waiting for more apps in
@@ -278,6 +281,13 @@ class HomeScreenMachine(
             HomeScreenIntent.CloseLook -> staged = null
             is OwnPictureStaged -> if (after.newPicture == event.ref) staged = event.jpeg
             is HomeScreenIntent.Look -> (event.edit as? LookEdit.SetKeyNames)?.let { e -> keyNames = e.on; scope.launch { saveKeyNames(e.on) } }
+            // AURA: the choice is kept first, so LookCarry puts it into the doc of the same push that re-sends the saved look.
+            is HomeScreenIntent.SetAura -> scope.launch {
+                d.homePrefs.saveAura(tvId, event.choice)
+                val choice = savedChoice()
+                if (choice?.isNew == true) pushSaved(choice, choice.dock)
+                else apply(savedDock() ?: after.dock.map { it.pkg }, after.themeId, after.pictureId, columns = savedColumns())
+            }
             HomeScreenIntent.RestoreMine -> scope.launch {
                 val choice = savedChoice()
                 if (choice?.isNew == true) pushSaved(choice, choice.dock)
@@ -306,6 +316,7 @@ class HomeScreenMachine(
         val snap = d.snapshots.latest(tvId)
         val packages = snap?.packages.orEmpty()
         val choice = d.homePrefs.load(tvId)
+        val auraChoice = attempt { d.homePrefs.loadAura(tvId) }.getOrNull()
         val today = d.clock.today()
         val lookId = choice?.lookOn(today)
         // The stored snapshot cannot say which apps are launchable, so the rule without that
@@ -353,7 +364,7 @@ class HomeScreenMachine(
             ownPicture = own, ownDim = choice?.dim ?: OwnPicture.DEFAULT_DIM,
             waitingApps = waiting, earlierPicture = earlierLook?.photo?.ref, sent = sentPreview, sentStyle = drafts.styleOf(choice, tvLook),
             sentPicture = drafts.pictureIdOf(choice, tvLook), launcherVersionCode = versionCode, ramMb = ramMb, hasInputs = hasInputs,
-            helper = HomeHelperFlows.card(snap, d.homeHelper),
+            helper = HomeHelperFlows.card(snap, d.homeHelper), aura = auraChoice,
             stockIsHome = snap != null && (profile?.stockLaunchers?.firstOrNull() ?: attempt { HomePlaceholder.stockFromRecords(d.ledger.changes(tvId)) }.getOrNull())
                 ?.let { st -> snap.home.resolved?.pkg == st.pkg } == true),
             choice, earlierLook, cardsNow, keys))

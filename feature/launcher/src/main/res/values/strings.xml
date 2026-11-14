@@ -25,6 +25,32 @@
     <string name="home_row_dock">Dock</string>
     <!-- The Dock row's subtitle when rows sit under the dock: the dock's apps, then how many more -->
     <string name="home_row_dock_rows">{names}, plus {count, plural, one {# app} other {# apps}} below</string>
+    <string name="home_row_aura">AURA home screen</string>
+    <string name="home_aura_on">On: the TV opens AURA</string>
+    <string name="home_aura_off">Off: the classic home screen</string>
+    <string name="home_aura_title">AURA home screen</string>
+    <string name="home_aura_note">A dark home screen with a side rail, a search bar, the app grid and quick actions. Needs the launcher build that carries AURA.</string>
+    <string name="home_aura_use">Use AURA</string>
+    <string name="home_aura_use_note">Off opens the classic home screen again. Nothing is uninstalled.</string>
+    <string name="home_aura_theme">Theme</string>
+    <string name="home_aura_theme_orbit">Orbit</string>
+    <string name="home_aura_theme_graphite">Graphite</string>
+    <string name="home_aura_theme_light">Light</string>
+    <string name="home_aura_focus">Focus colour</string>
+    <string name="home_aura_focus_mint">Mint</string>
+    <string name="home_aura_focus_blue">Blue</string>
+    <string name="home_aura_focus_violet">Violet</string>
+    <string name="home_aura_focus_amber">Amber</string>
+    <string name="home_aura_focus_rose">Rose</string>
+    <string name="home_aura_columns">Apps in a row</string>
+    <string name="home_aura_greeting">Greeting</string>
+    <string name="home_aura_quick">Quick actions</string>
+    <string name="home_aura_hints">Remote hints</string>
+    <string name="home_aura_voice">Voice search</string>
+    <string name="home_aura_anim">Animations</string>
+    <string name="home_aura_anim_note">Turn off on a slow TV</string>
+    <string name="home_aura_more">More options (order, favourites, hidden apps, wallpaper) are on the TV: AURA, Settings, Launcher settings.</string>
+    <string name="home_aura_send">Put it on the TV</string>
     <string name="home_row_look">Look</string>
     <string name="home_tcl_remote_keys">On TCL Google TV, the remote\'s Settings (gear), Netflix and YouTube buttons don\'t work with the new home screen. To get them back, choose Use the TV\'s own home screen.</string>
     <!-- Issue #3059: a Google TV of another brand than TCL, whose remote's Settings button may stop working -->

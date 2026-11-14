@@ -50,6 +50,7 @@ import tv.cleanyour.core.model.TrustRecord
 import tv.cleanyour.core.model.Tv
 import tv.cleanyour.core.model.TvId
 import tv.cleanyour.core.model.WizardDraft
+import tv.cleanyour.core.planner.LegacyHome
 import tv.cleanyour.core.planner.Choices
 import tv.cleanyour.core.planner.DefaultPlanner
 import tv.cleanyour.core.planner.FireOs
@@ -887,7 +888,7 @@ class SetupMachine(
             is ProfileResolution.BrandSureSet -> r.stockLaunchers
             is ProfileResolution.None -> r.stockLaunchers
             null -> emptyList()
-        }
+        }.let { LegacyHome.withLegacy(snap, it) }
         // Issue #2028: so is a TV whose Home answers to a home screen we do not know, ranked above ours.
         val stockUnknown = !ours && (StockHome.of(snap, stocks) == null || StockHome.unknownAboveOurs(snap, stocks))
         return when {
@@ -963,7 +964,10 @@ class SetupMachine(
         // RFC-HELPER-1 (test build): the Home button helper instead of the switch, when the person
         // switched it on in Customise and this TV meets its rules (HomeHelper.refusal, as the planner).
         val helperStock = helperStock(snap, block)
-        val helper = helperStock != null && draft.homeHelper
+        // AURA Edition: on a TV whose setup wizard claims Home (Google TV), the switch ends with the wizard
+        // taking Home (HOME_SETUPWRAITH, VERIFY_FAILED), so the Home button helper is the way, without asking.
+        val wizardClaimsHome = snap.home.claimants.any { "setupwraith" in it.component.pkg.value.lowercase() }
+        val helper = helperStock != null && (draft.homeHelper || wizardClaimsHome)
         val possible = block == HomeBlock.NONE && !helper
         val choices = Choices(
             kept = draft.kept, extraOff = draft.extraOff, dock = dock,

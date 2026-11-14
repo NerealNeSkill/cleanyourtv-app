@@ -1,5 +1,6 @@
 package tv.cleanyour.core.flows
 
+import tv.cleanyour.core.planner.NarrationText
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -232,6 +233,13 @@ class HomePrefs(private val store: DocumentStore) {
         store.write(path(id), encode(choice).encodeToByteArray())
     }
 
+    // The AURA home screen's choice for this TV (AuraChoice), null until the person made one.
+    suspend fun loadAura(id: TvId): AuraChoice? = store.read("tvs/${id.value}/aura.txt") { AuraChoice.decode(it.decodeToString()) }
+
+    suspend fun saveAura(id: TvId, choice: AuraChoice) {
+        store.write("tvs/${id.value}/aura.txt", AuraChoice.encode(choice).encodeToByteArray())
+    }
+
     companion object {
         private val OFFERED = DockLayers.MIN_OFFERED_COLUMNS..DockLayers.MAX_OFFERED_COLUMNS
 
@@ -360,7 +368,7 @@ class TvWriter(private val d: ManageDeps) {
             }
             d.openWrites.remember(plan.id, request)
             val outcome = d.runner.run(tv, plan, session, onStarted = { d.sessionEnd.touched(tvId) }) { s ->
-                if (s is RunState.Running) onBusy(Busy.Working(s.percent, s.narration.map { it.text }))
+                if (s is RunState.Running) onBusy(Busy.Working(s.percent, s.narration.map { NarrationText.localized(it.text) }))
             }
             when (outcome) {
                 is RunOutcome.Finished -> {
